@@ -45,7 +45,6 @@ public class ProductFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
-        // TODO: Use the ViewModel
     }
 
     private void retrofitGetData() {
@@ -58,15 +57,6 @@ public class ProductFragment extends Fragment {
             public void onResponse(Call<List<ProductData>> call, Response<List<ProductData>> response) {
                 List<ProductData> productDataList = response.body();
                 fillProduct(productDataList);
-//                List<ProductData> productDatas = response.body();
-//                for (ProductData productData : productDatas) {
-//                    String content = "";
-//                    content += "Id: " + productData.getId() + "\n";
-//                    content += "Hinh: " + productData.getHinh() + "\n";
-//                    content += "Ten: " + productData.getTen() + "\n";
-//                    content += "Gia: " + productData.getGia() + "\n\n";
-//                    Log.e("rs", content);
-//                }
             }
 
             @Override
