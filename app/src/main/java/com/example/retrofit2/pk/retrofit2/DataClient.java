@@ -2,7 +2,6 @@ package com.example.retrofit2.pk.retrofit2;
 
 import com.example.retrofit2.pk.model.ProductData;
 import java.util.List;
-
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -19,7 +18,7 @@ public interface DataClient {
     Call<List<ProductData>> getProduct();
 
     @Multipart
-    @PUT("upload-img.php")
+    @POST("upload-img.php")
     Call<String> uploadImage(@Part MultipartBody.Part photo);
 
     @FormUrlEncoded
