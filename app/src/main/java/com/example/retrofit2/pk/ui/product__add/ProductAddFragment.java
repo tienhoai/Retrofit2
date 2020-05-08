@@ -123,14 +123,35 @@ public class ProductAddFragment extends Fragment {
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File file = new File(realPath);
-                String filePath = file.getAbsolutePath();
-                String[] arrNameFile = filePath.split("\\.");
-                filePath = arrNameFile[0] + "_" + System.currentTimeMillis() + "." + arrNameFile[1];
-                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                String ten = etName.getText().toString();
+                String gia = etPrice.getText().toString();
+                String hinh = "https://android-data.000webhostapp.com/data/img/product_02.jpg";
+
+//                File file = new File(realPath);
+//                String filePath = file.getAbsolutePath();
+//                String[] arrNameFile = filePath.split("\\.");
+//                filePath = arrNameFile[0] + "_" + System.currentTimeMillis() + "." + arrNameFile[1];
+//                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 //                Toast.makeText(getActivity(), filePath, Toast.LENGTH_SHORT).show();
-                MultipartBody.Part body = MultipartBody.Part.createFormData("fileToUpload", filePath, requestBody);
-                retrofitPutData(body);
+//                MultipartBody.Part body = MultipartBody.Part.createFormData("fileToUpload", filePath, requestBody);
+//                retrofitPutData(body);
+
+                if (ten.length() > 0 && gia.length() >0) {
+                    DataClient dataClient = ApiClient.apiGetData();
+                    Call<String> callBack = dataClient.insertProduct(ten, gia, hinh);
+
+                    callBack.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+                }
             }
         });
     }
@@ -162,7 +183,7 @@ public class ProductAddFragment extends Fragment {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response != null) {
-                    Log.e("Test", "response.body()");
+//                    Log.e("Test", "response.body()");
                 }
             }
 
