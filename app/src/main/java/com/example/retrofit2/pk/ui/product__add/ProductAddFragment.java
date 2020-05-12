@@ -2,6 +2,7 @@ package com.example.retrofit2.pk.ui.product__add;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -92,21 +93,8 @@ public class ProductAddFragment extends Fragment {
 
     private void viewListener() {
 
-//        ivAvatar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                selectImage();
-//            }
-//        });
-//
-//        etPathImg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                selectImage();
-//            }
-//        });
-
         btSelectImage.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 selectImage();
@@ -114,6 +102,7 @@ public class ProductAddFragment extends Fragment {
         });
 
         btCancel.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Objects.requireNonNull(getActivity()).onBackPressed();
@@ -121,37 +110,50 @@ public class ProductAddFragment extends Fragment {
         });
 
         btAdd.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                String ten = etName.getText().toString();
-                String gia = etPrice.getText().toString();
-                String hinh = "https://android-data.000webhostapp.com/data/img/product_02.jpg";
+                final String ten = etName.getText().toString();
+                final String gia = etPrice.getText().toString();
+                final String hinh = ApiClient.baseUrl;
+                File file = new File(realPath);
+                String filePath = file.getAbsolutePath();
+                String[] arrNameFile = filePath.split("\\.");
+                filePath = arrNameFile[0] + "_" + System.currentTimeMillis() + "." + arrNameFile[1];
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("fileUpload", filePath, requestBody);
 
-//                File file = new File(realPath);
-//                String filePath = file.getAbsolutePath();
-//                String[] arrNameFile = filePath.split("\\.");
-//                filePath = arrNameFile[0] + "_" + System.currentTimeMillis() + "." + arrNameFile[1];
-//                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-//                Toast.makeText(getActivity(), filePath, Toast.LENGTH_SHORT).show();
-//                MultipartBody.Part body = MultipartBody.Part.createFormData("fileToUpload", filePath, requestBody);
-//                retrofitPutData(body);
+                final DataClient dataClient = ApiClient.apiGetData();
+                Call<String> callBack = dataClient.uploadImage(body);
+                callBack.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String name = response.body();
+//                        Log.e("Name", name);
 
-                if (ten.length() > 0 && gia.length() >0) {
-                    DataClient dataClient = ApiClient.apiGetData();
-                    Call<String> callBack = dataClient.insertProduct(ten, gia, hinh);
+                        if (ten.length() > 0 && gia.length() > 0) {
+                            DataClient dataClient = ApiClient.apiGetData();
+                            Call<String> callBack = dataClient.insertProduct(ten, gia, hinh + "image/" + name);
 
-                    callBack.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
+                            callBack.enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    Toast.makeText(getActivity(), "Thêm thành công", Toast.LENGTH_SHORT).show();
+                                }
 
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+
+                                }
+                            });
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+//                        Log.e("Loi upload img", t.toString());
+                    }
+                });
             }
         });
     }
@@ -175,24 +177,6 @@ public class ProductAddFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void retrofitPutData(MultipartBody.Part body) {
-        DataClient dataClient = ApiClient.apiGetData();
-        Call<String> callBack = dataClient.uploadImage(body);
-
-        callBack.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response != null) {
-//                    Log.e("Test", "response.body()");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-//                Log.e("Loi upload", t.getMessage().toString());
-            }
-        });
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

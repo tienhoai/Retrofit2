@@ -61,7 +61,7 @@ public class ProductFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<ProductData>> call, Throwable t) {
-                Log.e("NTH retrofitGetData", Objects.requireNonNull(t.getMessage()));
+//                Log.e("NTH retrofitGetData", Objects.requireNonNull(t.getMessage()));
             }
         });
     }

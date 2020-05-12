@@ -14,14 +14,14 @@ import retrofit2.http.Part;
 
 public interface DataClient {
 
-    @GET("get-product-database.php")
+    @GET("get-product.php")
     Call<List<ProductData>> getProduct();
 
     @Multipart
-    @POST("upload-img.php")
+    @POST("upload-image.php")
     Call<String> uploadImage(@Part MultipartBody.Part photo);
 
     @FormUrlEncoded
-    @POST("insert.php")
+    @POST("insert-product.php")
     Call<String> insertProduct(@Field("ten") String ten, @Field("gia") String gia, @Field("hinh") String hinh);
 }
